@@ -73,7 +73,9 @@ for idx, texture_name in enumerate(classes):
             glcm = greycomatrix(image_p_gray, distances=[1], angles=[0], levels = 256,  # GLCM co-occurence 계산
                                 symmetric=False, normed=True)
             X_train.append([greycoprops(glcm, 'dissimilarity')[0,0],
-                            greycoprops(glcm, 'correlation')[0,0]]          # GLCM dissimilarity, correlation 특징 추가(2차원)
+                            greycoprops(glcm, 'correlation')[0,0],
+                            greycoprops(glcm, 'homogeneity')[0,0]]
+                           # GLCM dissimilarity, correlation 특징 추가(5차원)
                            + laws_texture(image_p_gray))                    # laws texture 특징 추가(9차원)
             Y_train.append(idx)                                             # 라벨 추가
             
@@ -93,7 +95,8 @@ for idx, texture_name in enumerate(classes):
         glcm = greycomatrix(image_gray, distances=[1], angles=[0], levels=256,  # glcm co-occurence 계산
                             symmetric=False, normed=True)
         X_test.append([greycoprops(glcm,'dissimilarity')[0,0],
-                       greycoprops(glcm,'correlation')[0,0]]
+                       greycoprops(glcm,'correlation')[0,0],
+                       greycoprops(glcm, 'homogeneity')[0,0]]
                       + laws_texture(image_gray))                           # laws texture 특징 추가 (9차원)
         Y_test.append(idx)
         
@@ -158,9 +161,9 @@ Test_data = textureDataset(features=X_test, labels=Y_test)
 Trainloader = DataLoader(Train_data, batch_size=batch_size, shuffle=True)   # 학습 데이터 로더 정의
 Testloader = DataLoader(Test_data, batch_size=batch_size)
 
-net = MLP(11,8,5)
+net = MLP(12,8,5)                           # input 차원에 영향 주는 코드
 net.to(device)                                                              # 모델을 device로 보내기
-summary(net,(11,), device='cuda' if torch.cuda.is_available() else 'cpu')   # 모델 layer 출력
+summary(net,(12,), device='cuda' if torch.cuda.is_available() else 'cpu')   # 모델 layer 출력
 
 optimizer = optim.SGD(net.parameters(), lr=learning_rate)                   # 옵티마이저 정의
 criterion = nn.CrossEntropyLoss()                                           # loss 계산식 정의
