@@ -1,3 +1,5 @@
+# Texture Classification Model using law's texture and glcm
+
 from skimage.feature import greycomatrix, greycoprops
 import matplotlib.pyplot as plt
 from scipy import signal as sg
