@@ -1,3 +1,5 @@
+# Texture Classification Model using MLP
+
 import matplotlib.pyplot as plt
 import numpy as np
 import cv2
